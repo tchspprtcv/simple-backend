@@ -1,0 +1,36 @@
+{
+    "type": "controller",
+    "name": "FornecedorController",
+    "module": "fornecedor",
+    "description": "Endpoint para gestão de fornecedores",
+    "basePath": "/api/v1/fornecedores",
+    "actions": [
+        {
+            "actionName": "listaDeFornecedores",
+            "method": "GET",
+            "requestParams": [
+                {"type": "string", "name": "nome", "isRequired": false},
+                {"type": "FornecedorStatus", "objectType": "enum", "name": "status", "isRequired": false}
+            ]
+        },
+        {
+            "actionName": "obterFornecedor",
+            "path": "/{id}",
+            "method": "GET"
+        },
+        {
+            "actionName": "criarFornecedor",
+            "method": "POST"
+        },
+        {
+            "actionName": "atualizarFornecedor",
+            "path": "/{id}",
+            "method": "PUT"
+        },
+        {
+            "actionName": "deleteFornecedor",
+            "path": "/{id}",
+            "method": "DELETE"
+        }
+    ]
+}

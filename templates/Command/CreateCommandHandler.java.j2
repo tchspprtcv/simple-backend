@@ -1,0 +1,26 @@
+package {{ package_name }}.application.commands.create{{ entity_base_name }};
+
+import {{ package_name }}.application.mapper.{{ entity_base_name }}Mapper;
+import {{ package_name }}.domain.models.{{ entity_base_name }}Entity;
+import {{ package_name }}.domain.repository.I{{ entity_base_name }}Repository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+// TODO: Import CommandHandlerInterface if you have one (e.g. ICommandHandler<Create{{ entity_base_name }}Command, {{ id_type }}>)
+
+@Service
+@RequiredArgsConstructor
+public class Create{{ entity_base_name }}CommandHandler {
+
+    private final I{{ entity_base_name }}Repository {{ entity_var_name }}Repository;
+    private final {{ entity_base_name }}Mapper {{ entity_var_name }}Mapper;
+
+    @Transactional
+    public {{ id_type }} handle(Create{{ entity_base_name }}Command command) {
+        {{ entity_base_name }}Entity entity = {{ entity_var_name }}Mapper.toEntity(command.getDto());
+        // TODO: Add any pre-save logic, domain validations, or service calls here
+        entity = {{ entity_var_name }}Repository.save(entity);
+        return entity.getId(); // Assuming ID is accessible via getId() and matches {{ id_type }}
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "name": "TipoUtente",
+    "values": [
+        "NORMAL",
+        "ADMIN",
+        "CUSTOM"
+    ]
+}

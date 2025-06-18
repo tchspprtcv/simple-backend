@@ -1,0 +1,50 @@
+{
+    "type": "model",
+    "module": "fornecedor",
+    "name": "FornecedorEntity",
+    "tableName": "app_fornecedor",
+    "audit": true,
+    "crud": true,
+    "attributes": [
+        {
+            "name": "id",
+            "type": "long",
+            "primaryKey": true,
+            "generationType": "IDENTITY"
+        },
+        {
+            "name": "nome",
+            "type": "string",
+            "length": 255,
+            "nullable": false
+        },
+        {
+            "name": "nif",
+            "type": "string",
+            "length": 30,
+            "nullable": true,
+            "unique": true
+        },
+        {
+            "name": "email",
+            "type": "string",
+            "length": 100,
+            "nullable": true
+        },
+        {
+            "name": "telefone",
+            "type": "string",
+            "length": 30,
+            "nullable": true
+        },
+        {
+            "name": "status",
+            "type": "FornecedorStatus",
+            "objectType": "enum",
+            "module": "fornecedor",
+            "nullable": false
+        }
+    ],
+    "uniqueConstraints": [],
+    "indexes": []
+}

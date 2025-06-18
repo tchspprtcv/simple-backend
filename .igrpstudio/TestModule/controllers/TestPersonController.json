@@ -1,0 +1,48 @@
+{
+    "name": "TestPersonController",
+    "description": "API for managing Test Persons",
+    "basePath": "/api/v1/test-persons",
+    "actions": [
+        {
+            "actionName": "listaDeTestPersons",
+            "httpMethod": "GET",
+            "path": "",
+            "description": "Get a paginated list of test persons.",
+            "responseDTO": "TestPersonResponseDTO",
+            "handlerMethod": "handleListaDeTestPersonQuery"
+        },
+        {
+            "actionName": "obterTestPersonPorId",
+            "httpMethod": "GET",
+            "path": "/{id}",
+            "description": "Get a test person by their ID.",
+            "responseDTO": "TestPersonResponseDTO",
+            "handlerMethod": "handleObterTestPersonPorIdQuery"
+        },
+        {
+            "actionName": "criarTestPerson",
+            "httpMethod": "POST",
+            "path": "",
+            "description": "Create a new test person.",
+            "requestDTO": "CreateTestPersonDTO",
+            "responseDTO": "TestPersonResponseDTO",
+            "handlerMethod": "handleCriarTestPersonCommand"
+        },
+        {
+            "actionName": "atualizarTestPerson",
+            "httpMethod": "PUT",
+            "path": "/{id}",
+            "description": "Update an existing test person.",
+            "requestDTO": "UpdateTestPersonDTO",
+            "responseDTO": "TestPersonResponseDTO",
+            "handlerMethod": "handleAtualizarTestPersonCommand"
+        },
+        {
+            "actionName": "deleteTestPerson",
+            "httpMethod": "DELETE",
+            "path": "/{id}",
+            "description": "Delete a test person by their ID.",
+            "handlerMethod": "handleDeleteTestPersonCommand"
+        }
+    ]
+}

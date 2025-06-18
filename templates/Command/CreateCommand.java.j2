@@ -1,0 +1,12 @@
+package {{ package_name }}.application.commands.create{{ entity_base_name }};
+
+import {{ package_name }}.application.dto.Create{{ entity_base_name }}DTO;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+// TODO: Import any other necessary classes for the command pattern if you have a generic CommandInterface (e.g. ICommand)
+
+@Getter
+@RequiredArgsConstructor
+public class Create{{ entity_base_name }}Command { // TODO: Potentially implements YourBaseCommand<{{ id_type }}>
+    private final Create{{ entity_base_name }}DTO dto;
+}

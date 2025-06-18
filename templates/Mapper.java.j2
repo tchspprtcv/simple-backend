@@ -1,0 +1,30 @@
+package {{ package_name }}.application.mapper;
+
+import {{ package_name }}.application.dto.Create{{ entity_base_name }}DTO;
+import {{ package_name }}.application.dto.{{ entity_base_name }}ResponseDTO;
+import {{ package_name }}.application.dto.Update{{ entity_base_name }}DTO;
+import {{ package_name }}.domain.models.{{ entity_base_name }}Entity;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
+
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+public interface {{ entity_base_name }}Mapper {
+
+    {{ entity_base_name }}Mapper INSTANCE = Mappers.getMapper({{ entity_base_name }}Mapper.class);
+
+    {{ entity_base_name }}Entity toEntity(Create{{ entity_base_name }}DTO dto);
+
+    void updateEntityFromDto(Update{{ entity_base_name }}DTO dto, @MappingTarget {{ entity_base_name }}Entity entity);
+
+    {{ entity_base_name }}ResponseDTO toResponseDTO({{ entity_base_name }}Entity entity);
+
+    default Page<{{ entity_base_name }}ResponseDTO> toResponseDTOPage(Page<{{ entity_base_name }}Entity> page) {
+        if (page == null) {
+            return Page.empty();
+        }
+        return page.map(this::toResponseDTO);
+    }
+}

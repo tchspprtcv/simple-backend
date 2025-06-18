@@ -1,0 +1,24 @@
+package {{ package_name }}.application.commands.delete{{ entity_base_name }};
+
+import {{ package_name }}.domain.repository.I{{ entity_base_name }}Repository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+// TODO: Import EntityNotFoundException
+// TODO: Import ICommandHandler
+
+@Service
+@RequiredArgsConstructor
+public class Delete{{ entity_base_name }}CommandHandler { // TODO: Potentially implements ICommandHandler<Delete{{ entity_base_name }}Command, Void>
+
+    private final I{{ entity_base_name }}Repository {{ entity_var_name }}Repository;
+
+    @Transactional
+    public void handle(Delete{{ entity_base_name }}Command command) {
+        if (!{{ entity_var_name }}Repository.existsById(command.getId())) {
+            throw new RuntimeException("{{ entity_base_name }} not found with id: " + command.getId()); // TODO: Replace with specific EntityNotFoundException
+        }
+        // TODO: Add any pre-delete logic, domain validations, or service calls here (e.g., check for related entities)
+        {{ entity_var_name }}Repository.deleteById(command.getId());
+    }
+}

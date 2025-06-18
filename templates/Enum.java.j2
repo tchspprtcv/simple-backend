@@ -1,0 +1,28 @@
+package {{ package_name }}.domain.models; // Or a dedicated enums package like {{ package_name }}.domain.enums
+
+// TODO: Consider moving enums to a sub-package like 'enums' within domain.models or application.constants
+public enum {{ enum_name }} {
+    {% for value_obj in values %}
+    {{ value_obj.name }}{% if value_obj.details %}({% for detail_key, detail_val in value_obj.details.items() %}"{{ detail_val }}"{% if not loop.last %}, {% endif %}{% endfor %}){% endif %}{% if not loop.last %},{% endif %}
+    {% endfor %};
+
+    {% if values and values[0].details %}
+    {% for field_name, field_type in values[0].details_structure.items() %}
+    private final {{ field_type }} {{ field_name }};
+    {% endfor %}
+
+    {{ enum_name }}({% for field_name, field_type in values[0].details_structure.items() %}{{ field_type }} {{ field_name }}{% if not loop.last %}, {% endif %}{% endfor %}) {
+        {% for field_name, field_type in values[0].details_structure.items() %}
+        this.{{ field_name }} = {{ field_name }};
+        {% endfor %}
+    }
+
+    {% for field_name, field_type in values[0].details_structure.items() %}
+    public {{ field_type }} get{{ field_name | capitalize }}() {
+        return this.{{ field_name }};
+    }
+    {% endfor %}
+    {% endif %}
+
+    // TODO: Add fromString or other utility methods if needed
+}

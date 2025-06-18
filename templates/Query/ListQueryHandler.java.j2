@@ -1,0 +1,33 @@
+package {{ package_name }}.application.queries.list{{ entity_base_name }};
+
+import {{ package_name }}.application.dto.{{ entity_base_name }}ResponseDTO;
+import {{ package_name }}.application.mapper.{{ entity_base_name }}Mapper;
+import {{ package_name }}.domain.models.{{ entity_base_name }}Entity; // Required for Page mapping
+import {{ package_name }}.domain.repository.I{{ entity_base_name }}Repository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable; // Required for query.getPageable()
+// TODO: Import PageRequest if not directly using Pageable from query object
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+// TODO: Import IQueryHandler
+
+@Service
+@RequiredArgsConstructor
+public class ListaDe{{ entity_base_name }}QueryHandler { // TODO: Potentially implements IQueryHandler<ListaDe{{ entity_base_name }}Query, Page<{{ entity_base_name }}ResponseDTO>>
+
+    private final I{{ entity_base_name }}Repository {{ entity_var_name }}Repository;
+    private final {{ entity_base_name }}Mapper {{ entity_var_name }}Mapper;
+
+    @Transactional(readOnly = true)
+    public Page<{{ entity_base_name }}ResponseDTO> handle(ListaDe{{ entity_base_name }}Query query) {
+        // If query object directly contains Pageable:
+        Pageable pageable = query.getPageable();
+        // If query object contains page and size:
+        // Pageable pageable = PageRequest.of(query.getPage(), query.getSize());
+
+        // TODO: Add specification/criteria query for filtering based on query.getFilterParam()
+        Page<{{ entity_base_name }}Entity> entityPage = {{ entity_var_name }}Repository.findAll(pageable);
+        return {{ entity_var_name }}Mapper.toResponseDTOPage(entityPage);
+    }
+}

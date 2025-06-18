@@ -1,0 +1,24 @@
+package {{ package_name }}.application.dto;
+
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+// TODO: Add imports for validation
+// TODO: Add imports for field types
+// TODO: Import enums if they are in a different package
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Update{{ entity_name }}DTO {
+
+    // ID is typically not in UpdateDTO body for REST (comes from path), but can be included if needed by app logic.
+    // For now, let's assume it's similar to CreateDTO for fields, but could be different.
+    {% for attr in attributes %}
+    {% if not attr.is_id %}
+    private {{ attr.type }} {{ attr.name }};
+    {% endif %}
+    {% endfor %}
+}

@@ -1,0 +1,27 @@
+package {{ package_name }}.application.queries.list{{ entity_base_name }};
+
+import lombok.Getter;
+import org.springframework.data.domain.Pageable;
+// Import other types needed for filter parameters
+
+@Getter
+public class ListaDe{{ entity_base_name }}Query {
+
+    private final Pageable pageable;
+    {% for param in request_params %}
+    private final {{ param.type }} {{ param.name_camel_case }};
+    {% endfor %}
+
+    // Constructor
+    public ListaDe{{ entity_base_name }}Query(
+        Pageable pageable{% if request_params %},{% endif %}
+        {% for param in request_params %}
+        {{ param.type }} {{ param.name_camel_case }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ) {
+        this.pageable = pageable;
+        {% for param in request_params %}
+        this.{{ param.name_camel_case }} = {{ param.name_camel_case }};
+        {% endfor %}
+    }
+}

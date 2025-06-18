@@ -1,0 +1,13 @@
+package {{ package_name }}.application.commands.update{{ entity_base_name }};
+
+import {{ package_name }}.application.dto.Update{{ entity_base_name }}DTO;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+// TODO: Import ICommand
+
+@Getter
+@RequiredArgsConstructor
+public class Update{{ entity_base_name }}Command { // TODO: Potentially implements YourBaseCommand<Void> or {{ entity_base_name }}ResponseDTO
+    private final {{ id_type }} id;
+    private final Update{{ entity_base_name }}DTO dto;
+}

@@ -1,0 +1,11 @@
+package {{ package_name }}.application.queries.get{{ entity_base_name }}ById;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+// TODO: Import IQuery
+
+@Getter
+@RequiredArgsConstructor
+public class Get{{ entity_base_name }}ByIdQuery { // TODO: Potentially implements IQuery<{{ entity_base_name }}ResponseDTO>
+    private final {{ id_type }} id;
+}

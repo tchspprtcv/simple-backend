@@ -1,0 +1,104 @@
+package {{ package_name }}.infrastructure.controller;
+
+import {{ package_name }}.application.commands.create{{ entity_base_name }}.Create{{ entity_base_name }}Command;
+import {{ package_name }}.application.commands.delete{{ entity_base_name }}.Delete{{ entity_base_name }}Command;
+import {{ package_name }}.application.commands.update{{ entity_base_name }}.Update{{ entity_base_name }}Command;
+import {{ package_name }}.application.dto.Create{{ entity_base_name }}DTO;
+import {{ package_name }}.application.dto.{{ entity_base_name }}ResponseDTO;
+import {{ package_name }}.application.dto.Update{{ entity_base_name }}DTO;
+import {{ package_name }}.application.queries.list{{ entity_base_name }}.ListaDe{{ entity_base_name }}Query;
+import {{ package_name }}.application.queries.get{{ entity_base_name }}ById.Get{{ entity_base_name }}ByIdQuery;
+
+// TODO: Make these CommandBus/QueryBus import paths configurable or more robustly determined
+import cv.igrp.simple.shared.infraestrutura.Bus.CommandBus;
+import cv.igrp.simple.shared.infraestrutura.Bus.QueryBus;
+// TODO: Import Enums used as request parameters if any, e.g.
+// import {{ package_name }}.domain.models.YourEnumForRequestParam;
+
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault; // For @PageableDefault
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import org.springdoc.core.annotations.ParameterObject; // For complex query objects or Pageable
+import javax.validation.Valid;
+
+@RestController
+@RequestMapping("{{ base_path }}")
+@RequiredArgsConstructor
+@Tag(name = "{{ controller_tag }}")
+public class {{ controller_name }} { // Controller name directly from JSON
+
+    private final CommandBus commandBus;
+    private final QueryBus queryBus;
+
+    {% for action in actions %}
+    {% if action.derived_action_type == "listaDe" %}
+    @Operation(summary = "List {{ entity_base_name }}s")
+    @GetMapping
+    public ResponseEntity<Page<{{ entity_base_name }}ResponseDTO>> {{ action.method_name }}(
+        @PageableDefault(size = 10, sort = "id") Pageable pageable{% if action.request_params %},{% endif %}
+        {% for param in action.request_params %}
+        @RequestParam(name = "{{ param.name }}", required = {{ param.is_required | string | lower }}) {{ param.type }} {{ param.name_camel_case }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ) {
+        ListaDe{{ entity_base_name }}Query query = new ListaDe{{ entity_base_name }}Query(pageable{% if action.request_params %},{% endif %}
+            {% for param in action.request_params %}
+            {{param.name_camel_case}}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        );
+        Page<{{ entity_base_name }}ResponseDTO> result = queryBus.execute(query);
+        return ResponseEntity.ok(result);
+    }
+    {% elif action.derived_action_type == "obter" %}
+    @Operation(summary = "Get {{ entity_base_name }} by ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<{{ entity_base_name }}ResponseDTO> {{ action.method_name }}(@PathVariable("id") {{ id_type }} id) {
+        Get{{ entity_base_name }}ByIdQuery query = new Get{{ entity_base_name }}ByIdQuery(id);
+        {{ entity_base_name }}ResponseDTO result = queryBus.execute(query);
+        return ResponseEntity.ok(result);
+    }
+    {% elif action.derived_action_type == "criar" %}
+    @Operation(summary = "Create a new {{ entity_base_name }}")
+    @PostMapping
+    public ResponseEntity<{{ entity_base_name }}ResponseDTO> {{ action.method_name }}(@Valid @RequestBody Create{{ entity_base_name }}DTO dto) {
+        Create{{ entity_base_name }}Command command = new Create{{ entity_base_name }}Command(dto);
+        {{ id_type }} id = commandBus.execute(command);
+
+        Get{{ entity_base_name }}ByIdQuery query = new Get{{ entity_base_name }}ByIdQuery(id);
+        {{ entity_base_name }}ResponseDTO result = queryBus.execute(query);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+    {% elif action.derived_action_type == "atualizar" %}
+    @Operation(summary = "Update an existing {{ entity_base_name }}")
+    @PutMapping("/{id}")
+    public ResponseEntity<{{ entity_base_name }}ResponseDTO> {{ action.method_name }}(
+        @PathVariable("id") {{ id_type }} id,
+        @Valid @RequestBody Update{{ entity_base_name }}DTO dto
+    ) {
+        Update{{ entity_base_name }}Command command = new Update{{ entity_base_name }}Command(id, dto);
+        commandBus.execute(command);
+
+        Get{{ entity_base_name }}ByIdQuery query = new Get{{ entity_base_name }}ByIdQuery(id);
+        {{ entity_base_name }}ResponseDTO result = queryBus.execute(query);
+        return ResponseEntity.ok(result);
+    }
+    {% elif action.derived_action_type == "inativar" or action.derived_action_type == "delete" %}
+    @Operation(summary = "Delete an {{ entity_base_name }} by ID")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> {{ action.method_name }}(@PathVariable("id") {{ id_type }} id) {
+        Delete{{ entity_base_name }}Command command = new Delete{{ entity_base_name }}Command(id);
+        commandBus.execute(command);
+        return ResponseEntity.noContent().build();
+    }
+    {% else %}
+    // TODO: Placeholder for other action types: {{ action.action_name }} ({{ action.http_method }} {{ action.path }})
+    {% endif %}
+
+    {% endfor %}
+}

@@ -1,0 +1,27 @@
+{
+    "name": "TestPersonEntity",
+    "table_name": "tbl_test_person",
+    "attributes": [
+        {
+            "name": "personId",
+            "type": "long",
+            "primaryKey": true,
+            "generationType": "IDENTITY"
+        },
+        {
+            "name": "fullName",
+            "type": "text",
+            "nullable": false
+        },
+        {
+            "name": "dateOfBirth",
+            "type": "date",
+            "nullable": true
+        },
+        {
+            "name": "isActive",
+            "type": "boolean"
+        }
+    ],
+    "methods": []
+}

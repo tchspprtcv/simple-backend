@@ -1,0 +1,11 @@
+package {{ package_name }}.application.commands.delete{{ entity_base_name }};
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+// TODO: Import ICommand
+
+@Getter
+@RequiredArgsConstructor
+public class Delete{{ entity_base_name }}Command { // TODO: Potentially implements YourBaseCommand<Void>
+    private final {{ id_type }} id;
+}

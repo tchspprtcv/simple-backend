@@ -1,0 +1,30 @@
+package {{ package_name }}.application.dto;
+
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+// TODO: Add imports for field types like java.time.LocalDate, java.math.BigDecimal
+// TODO: Import enums if they are in a different package
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class {{ entity_name }}ResponseDTO {
+
+    private {{ id_type }} id; // Use the actual type of ID
+
+    {% for attr in attributes %}
+    {% if not attr.is_id %}
+    private {{ attr.type }} {{ attr.name }};
+    {% endif %}
+    {% endfor %}
+
+    // Assuming AuditEntity fields are present
+    // TODO: Make these configurable or dynamically added if AuditEntity is extended
+    private java.time.LocalDateTime createdAt;
+    private java.time.LocalDateTime updatedAt;
+    private String createdBy;
+    private String updatedBy;
+}

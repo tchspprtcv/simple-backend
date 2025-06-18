@@ -1,0 +1,27 @@
+package {{ package_name }}.application.queries.get{{ entity_base_name }}ById;
+
+import {{ package_name }}.application.dto.{{ entity_base_name }}ResponseDTO;
+import {{ package_name }}.application.mapper.{{ entity_base_name }}Mapper;
+import {{ package_name }}.domain.models.{{ entity_base_name }}Entity;
+import {{ package_name }}.domain.repository.I{{ entity_base_name }}Repository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+// TODO: Import EntityNotFoundException
+// TODO: Import IQueryHandler
+
+@Service
+@RequiredArgsConstructor
+public class Get{{ entity_base_name }}ByIdQueryHandler { // TODO: Potentially implements IQueryHandler<Get{{ entity_base_name }}ByIdQuery, {{ entity_base_name }}ResponseDTO>
+
+    private final I{{ entity_base_name }}Repository {{ entity_var_name }}Repository;
+    private final {{ entity_base_name }}Mapper {{ entity_var_name }}Mapper;
+
+    @Transactional(readOnly = true)
+    public {{ entity_base_name }}ResponseDTO handle(Get{{ entity_base_name }}ByIdQuery query) {
+        {{ entity_base_name }}Entity entity = {{ entity_var_name }}Repository.findById(query.getId())
+            .orElseThrow(() -> new RuntimeException("{{ entity_base_name }} not found with id: " + query.getId())); // TODO: Replace with specific EntityNotFoundException
+
+        return {{ entity_var_name }}Mapper.toResponseDTO(entity);
+    }
+}

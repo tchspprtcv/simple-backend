@@ -1,0 +1,28 @@
+package {{ package_name }}.application.commands.update{{ entity_base_name }};
+
+import {{ package_name }}.application.mapper.{{ entity_base_name }}Mapper;
+import {{ package_name }}.domain.models.{{ entity_base_name }}Entity;
+import {{ package_name }}.domain.repository.I{{ entity_base_name }}Repository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+// TODO: Import EntityNotFoundException
+// TODO: Import ICommandHandler
+
+@Service
+@RequiredArgsConstructor
+public class Update{{ entity_base_name }}CommandHandler { // TODO: Potentially implements ICommandHandler<Update{{ entity_base_name }}Command, Void>
+
+    private final I{{ entity_base_name }}Repository {{ entity_var_name }}Repository;
+    private final {{ entity_base_name }}Mapper {{ entity_var_name }}Mapper;
+
+    @Transactional
+    public void handle(Update{{ entity_base_name }}Command command) {
+        {{ entity_base_name }}Entity entity = {{ entity_var_name }}Repository.findById(command.getId())
+            .orElseThrow(() -> new RuntimeException("{{ entity_base_name }} not found with id: " + command.getId())); // TODO: Replace with specific EntityNotFoundException
+
+        {{ entity_var_name }}Mapper.updateEntityFromDto(command.getDto(), entity);
+        // TODO: Add any pre-update logic, domain validations, or service calls here
+        {{ entity_var_name }}Repository.save(entity);
+    }
+}

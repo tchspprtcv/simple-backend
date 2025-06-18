@@ -1,0 +1,8 @@
+{
+    "name": "Estado",
+    "values": [
+        "ACTIVE",
+        "INACTIVE",
+        "PENDING"
+    ]
+}

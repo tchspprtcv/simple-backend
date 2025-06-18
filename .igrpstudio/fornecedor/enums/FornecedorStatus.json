@@ -1,0 +1,10 @@
+{
+    "type": "enum",
+    "module": "fornecedor",
+    "name": "FornecedorStatus",
+    "values": [
+        "ATIVO",
+        "INATIVO",
+        "PENDENTE"
+    ]
+}

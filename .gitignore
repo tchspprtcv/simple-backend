@@ -27,7 +27,18 @@ target/
 /.nb-gradle/
 build/
 !**/src/main/**/build/
-!**/src/test/**/build/
+!**/src_test/**/build/
 
 ### VS Code ###
 .vscode/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Generator output directories
+generated_output/
+generated_utente_module/
+generated_fornecedor_module/

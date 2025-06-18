@@ -1,0 +1,65 @@
+package {{ package_name }}.domain.models;
+
+import cv.igrp.simple.shared.config.AuditEntity; // Assuming this path
+import cv.igrp.framework.stereotype.IgrpEntity;   // Assuming this path
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+import java.util.List; // Default import for collections
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size; // Common validation, add others as needed
+
+@Data
+@EqualsAndHashCode(callSuper = false) // Set to true if AuditEntity has fields and you want them in equals/hashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@IgrpEntity // TODO: Make this configurable
+@Entity
+@Table(name = "{{ table_name }}")
+public class {{ entity_name }}Entity extends AuditEntity { // TODO: Make AuditEntity extension configurable
+
+    {% for attr in attributes %}
+    {% if attr.is_id %}
+    @Id
+    {% if attr.generation_type == "IDENTITY" or attr.generation_type == "SEQUENCE" or attr.generation_type == "AUTO" %}
+    @GeneratedValue(strategy = GenerationType.{{ attr.generation_type }})
+    {% elif attr.generation_type %}
+    // Manual or other generation type, @GeneratedValue might not be needed or different config
+    @GeneratedValue(generator = "{{ attr.generation_type }}") // Example if it's a named generator
+    {% endif %}
+    @Column(name = "{{ attr.column_name }}", unique = true, nullable = false)
+    private {{ attr.type }} {{ attr.name }};
+    {% else %}
+    {% if attr.is_enum %}
+    @Enumerated(EnumType.STRING)
+    {% endif %}
+    {% if attr.is_one_to_many %}
+    @OneToMany(mappedBy = "{{ attr.mapped_by }}", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true) // Sensible defaults
+    {% elif attr.is_many_to_one %}
+    @ManyToOne(fetch = FetchType.LAZY) // Sensible default
+    @JoinColumn(name = "{{ attr.join_column_name }}" {% if not attr.nullable %}, nullable = false{% endif %})
+    {% elif attr.is_one_to_one %}
+    @OneToOne(fetch = FetchType.LAZY {% if not attr.nullable %}, optional = false{% endif %}) // optional=false means not nullable
+    @JoinColumn(name = "{{ attr.join_column_name }}" {% if not attr.nullable %}, nullable = false{% endif %})
+    {% endif %}
+    {% if not attr.is_relation %} {# Don't add @Column for relations handled by @JoinColumn etc. #}
+    @Column(name = "{{ attr.column_name }}"{% if not attr.nullable %}, nullable = false{% endif %}{% if attr.length and attr.type == "String" %}, length = {{ attr.length }}{% endif %})
+    {% endif %}
+    {# Basic validation annotations based on nullable from JSON #}
+    {% if not attr.nullable %}
+    {% if attr.type == "String" and attr.is_not_blank_from_json %}@NotBlank {% else %}@NotNull {% endif %}
+    {% endif %}
+    {% if attr.length and attr.type == "String" %}@Size(max = {{ attr.length }}) {% endif %}
+    private {{ attr.type }} {{ attr.name }};
+    {% endif %}
+
+    {% endfor %}
+
+    // TODO: Add custom methods from entity_config['methods']
+    // TODO: Review cascade types, fetch types, and orphanRemoval for relationships
+}

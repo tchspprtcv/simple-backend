@@ -1,0 +1,24 @@
+package {{ package_name }}.application.dto;
+
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+// TODO: Add imports for validation if needed, e.g., javax.validation.constraints.NotBlank
+// TODO: Add imports for field types like java.time.LocalDate, java.math.BigDecimal
+// TODO: Import enums if they are in a different package, e.g.,
+// import {{ package_name }}.domain.models.YourEnumName;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Create{{ entity_name }}DTO {
+
+    {% for attr in attributes %}
+    {% if not attr.is_id %} // Exclude ID for CreateDTO
+    // TODO: Consider adding validation annotations based on attr.nullable or other metadata
+    private {{ attr.type }} {{ attr.name }};
+    {% endif %}
+    {% endfor %}
+}

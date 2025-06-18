@@ -1,0 +1,13 @@
+package {{ package_name }}.domain.repository;
+
+import {{ package_name }}.domain.models.{{ entity_name }}Entity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
+
+// TODO: Add imports for ID type if it's not a standard Java type (e.g. custom ID class)
+
+@Repository
+public interface I{{ entity_name }}Repository extends JpaRepository<{{ entity_name }}Entity, {{ id_type }}>, JpaSpecificationExecutor<{{ entity_name }}Entity> {
+    // TODO: Add custom query methods if needed based on entity_config['methods'] or specific needs
+}
