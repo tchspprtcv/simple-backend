@@ -583,3 +583,56 @@ public class LivroEntity {
 ```
 
 Este exemplo demonstra como uma configuração JSON simples para uma entidade é transformada em um arquivo Java `*Entity.java` completo com as anotações JPA e de validação apropriadas. Similarmente, se tivéssemos definido DTOs, repositório, mapper e controller, estes também seriam gerados com base em suas respectivas configurações e templates.
+
+## FAQs ou Dicas rápidas
+
+Aqui estão algumas perguntas frequentes e dicas rápidas para ajudar no uso do gerador de código:
+
+**P1: Posso editar os arquivos gerados?**
+
+*   **R:** Sim, você pode editar os arquivos gerados. No entanto, esteja ciente de que **se você executar o gerador novamente para o mesmo módulo, suas alterações manuais nos arquivos gerados anteriormente serão sobrescritas.**
+*   **Estratégias:**
+    *   **Commit Frequente:** Sempre faça commit das suas alterações no Git antes de regenerar. Assim, você pode ver o que foi alterado e decidir se deseja manter suas edições ou as novas versões geradas.
+    *   **Geração em Diretório Temporário:** Gere o código em um diretório de saída temporário (usando `--output_dir ./temp_generated_code`) e depois use uma ferramenta de `diff/merge` (como a da sua IDE ou `meld`, `kdiff3`) para mesclar as alterações nos seus arquivos de código fonte principais. Isso lhe dá controle total sobre o que é sobrescrito.
+    *   **Herança/Composição:** Para adicionar funcionalidades sem alterar diretamente o código gerado, considere criar classes que herdam das classes geradas ou que as utilizam por composição.
+    *   **Edite os Templates:** Se a modificação é algo que você deseja aplicar a todo o código gerado desse tipo, a melhor abordagem a longo prazo é editar os templates Jinja2 (`.j2`) na pasta `templates/`.
+
+**P2: Como versionar as configurações do `.igrpstudio` no Git?**
+
+*   **R:** Simplesmente adicione e faça commit do diretório `.igrpstudio` e todo o seu conteúdo (arquivos JSON de módulo, modelo, controller, enum) ao seu repositório Git.
+*   **Boas Práticas:**
+    *   Trate esses arquivos de configuração como parte integrante do código fonte do seu projeto.
+    *   Ao fazer alterações nas configurações (ex: adicionar um novo atributo a uma entidade), faça commit dessas alterações com mensagens claras.
+    *   Isso garante que toda a equipe tenha acesso às mesmas configurações e que o histórico de mudanças na estrutura da sua aplicação seja rastreável.
+
+**P3: O gerador parece lento para módulos muito grandes. Há algo que eu possa fazer?**
+
+*   **R:** A geração envolve leitura de múltiplos arquivos, parsing de JSON, e renderização de templates, o que pode levar algum tempo para módulos com muitas entidades e controllers.
+*   **Dicas:**
+    *   **Gere por Módulo:** O script já opera no nível do módulo, o que é a principal forma de granularidade. Evite tentar gerar "tudo de uma vez" se não for necessário.
+    *   **Hardware:** Uma máquina mais rápida (CPU, SSD) naturalmente processará mais rápido.
+    *   **Otimização do Script (Avançado):** Se se tornar um gargalo significativo, o script Python em si poderia ser perfilado e otimizado, mas isso seria um esforço de desenvolvimento considerável.
+
+**P4: Como posso adicionar um novo tipo de dado que não é suportado pela função `map_type`?**
+
+*   **R:** Você precisará editar o script `code_generator.py`.
+    1.  Abra o arquivo `code_generator.py`.
+    2.  Localize a função `map_type(igrp_type, attr_config=None)`.
+    3.  Adicione uma nova entrada ao dicionário `mapping` ou adicione uma nova condição `if/elif` para o seu tipo customizado, retornando a string correspondente ao tipo Java completo (ex: `com.minhabiblioteca.MeuTipoCustomizado`).
+    4.  Certifique-se de que a classe Java correspondente esteja disponível no classpath do projeto gerado.
+
+**P5: Posso customizar os templates de geração?**
+
+*   **R:** Sim! Esta é uma das grandes vantagens do gerador. Os templates estão na pasta `templates/` e são arquivos `.java.j2` (Jinja2).
+*   Você pode modificar os templates existentes para alterar a estrutura do código gerado, adicionar ou remover anotações, mudar a formatação, etc.
+*   **Cuidado:** Faça um backup dos templates originais antes de modificá-los extensivamente, ou trabalhe em um branch separado do Git. Entender a sintaxe do Jinja2 será necessário.
+
+**P6: Onde devo colocar o código de negócio específico que não é gerado?**
+
+*   **R:** O código gerado (Entidades, Repositórios básicos, DTOs, Mappers, Controllers básicos, Comandos/Queries CQRS) forma a camada de infraestrutura e aplicação básica.
+*   A lógica de negócio mais complexa, validações específicas, orquestração de serviços, ou qualquer comportamento que não seja puramente CRUD, geralmente pertence a:
+    *   **Classes de Serviço/Use Case:** (Que podem usar os repositórios e mappers gerados).
+    *   **Handlers de Comando/Query:** Os handlers gerados são básicos. Você frequentemente os estenderá com lógica de negócios.
+    *   **Métodos customizados em Entidades:** Para lógica intrínseca à entidade.
+    *   **Novas classes:** Que interagem com os componentes gerados.
+    O ideal é manter uma separação clara entre o código gerado (que pode ser sobrescrito) e o seu código customizado.
